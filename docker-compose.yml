@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+
+  nginx:
+    image: nginx:alpine
+    container_name: web_nginx
+    restart: unless-stopped
+    ports:
+      - '3000:80'
+    volumes:
+      - ./src:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+
+  php:
+    build: ./php
+    container_name: web_php
+    restart: unless-stopped
+    volumes:
+      - ./src:/var/www/html
+    environment:
+      DB_HOST:       100.115.105.74
+      DB_NAME:       uploads
+      DB_USER:       appuser
+      DB_PASS:       apppassword
+      MINIO_HOST:    100.120.75.92
+      MINIO_PORT:    '9000'
+      MINIO_KEY:     admin
+      MINIO_SECRET:  password123
+      SQS_ENDPOINT:  http://100.120.75.92:4566
+      SQS_QUEUE_URL: http://100.120.75.92:4566/000000000000/upload-queue
+
+  node-exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    network_mode: host
+    pid: host
+    volumes:
+      - /:/host:ro,rslave
+    command: --path.rootfs=/host
