@@ -49,3 +49,4 @@ $files = $db->query('SELECT * FROM files ORDER BY created_at DESC LIMIT 20')->fe
     <?php endif; ?>
 </body>
 </html>
+<!-- cicd-test -->
