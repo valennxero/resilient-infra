@@ -1,35 +1,24 @@
-name: Deploy to B1 and B2
+name: Deploy
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
-  deploy-b1:
-    name: Deploy ke Laptop B1
+  deploy:
     runs-on: self-hosted
+
     steps:
-      - name: Checkout kode
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Deploy ke B1 via SSH
+      - name: Deploy B1
         run: |
-          ssh -i ~/.ssh/deploy_key \
-            -o StrictHostKeyChecking=no \
-            user@<100.101.236.44> \
-            'cd ~/laptop-b1 && git pull origin main && docker compose up -d --build'
+          cd ~/laptop-b1
+          git pull origin main
+          docker compose up -d --build
 
-  deploy-b2:
-    name: Deploy ke Laptop B2
-    runs-on: self-hosted
-    needs: deploy-b1
-    steps:
-      - name: Checkout kode
-        uses: actions/checkout@v4
-
-      - name: Deploy ke B2 via SSH
+      - name: Deploy B2
         run: |
-          ssh -i ~/.ssh/deploy_key \
-            -o StrictHostKeyChecking=no \
-            user@<100.103.164.64> \
-            'cd ~/laptop-b2 && git pull origin main && docker compose up -d --build'
+          ssh -o StrictHostKeyChecking=no ubuntu@100.103.164.64 \
+          "cd ~/laptop-b2 && git pull origin main && docker compose up -d --build"
