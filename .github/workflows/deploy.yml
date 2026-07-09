@@ -10,15 +10,12 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - uses: actions/checkout@v4
-
       - name: Deploy B1
         run: |
-          cd ~/laptop-b1
-          git pull origin main
-          docker compose up -d --build
+          ssh -o StrictHostKeyChecking=no ubuntu@100.101.236.44 \
+          "cd ~/laptop-b1 && git pull origin main && docker compose up -d --build"
 
       - name: Deploy B2
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@100.103.164.64 \
+          ssh -o StrictHostKeyChecking=no niko@100.103.164.64 \
           "cd ~/laptop-b2 && git pull origin main && docker compose up -d --build"
