@@ -2,3 +2,4 @@ src/vendor/
 vendor/
 .env
 composer.phar
+actions-runner/
